@@ -26,24 +26,24 @@ guesses = [0]           # LIST OF GUESSES STARTING WITH 0 AS PACEHOLDER
 
 while True:
     
-    guess = int(input('I am thinking of a number between 1 and 100. \n What is your guess '))
+    guess = int(input('I am thinking of a number between 1 and 100. \n What is your guess '))  #TAKES USER INPUT
     
     if guess == num:
-        print(f'Well done you guesses right! It only took you {len(guesses)} guesses')
+        print(f'Well done you guesses right! It only took you {len(guesses)} guesses')   #COMPARES GUESS TO COMP NUMBER
         break
-    if guess < 1 or guess > 100:
+    if guess < 1 or guess > 100:                                                        # SETS LIMITS
         print('Sorry out of bounds!')
         continue 
         
-    guesses.append(guess) 
+    guesses.append(guess)                                                               #ADDS EACH NEW GUESS TO LIST OF GUESSES
     
     if guesses[-2]:
-        if abs(num-guess) < abs(num-guesses[-2]):
+        if abs(num-guess) < abs(num-guesses[-2]):                                       # COMPARES LAST GUESS TO CURRENT GUESS
             print('your getting warmer!')
         else:
             print('your getting colder')
     else:
-        if abs(num-guess) <= 10:
+        if abs(num-guess) <= 10:                                                     #IF GUESS IS LESS THAN 10 AWAY 
             print('warm!')
         else:
             print('cold')
