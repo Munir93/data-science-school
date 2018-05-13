@@ -1,4 +1,12 @@
 #### Munir welch 13/05/2018 ############
+### So this is my first attempt at grabbing data directly of of a webpage and converting into an excel file so that I could run analysis on it 
+### I figured this would be a good skill for a data analyst to develop 
+### I decided to use the stats I found on the Europa leauge website on the arsenal vs athletico game. link below 
+### http://www.uefa.com/uefaeuropaleague/season=2018/clubs/club=52280/statistics/index.html
+### here is the link to the tableau dashboard I created off this data 
+###  https://public.tableau.com/views/ARSVSATL/Dashboard1?:embed=y&:display_count=yes&publish=yes
+### this is my first ever time using tableau so the views are not as amazing as I would of liked 
+
 
 from bs4 import BeautifulSoup as soup
 import pandas as pd
