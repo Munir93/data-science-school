@@ -1,4 +1,5 @@
-#### Munir welch 13/05/2018 ############
+#### Munir welch 13/05/2018 #####
+### WEB SCRAPING 
 ### So this is my first attempt at grabbing data directly of of a webpage and converting into an excel file so that I could run analysis on it 
 ### I figured this would be a good skill for a data analyst to develop 
 ### I decided to use the stats I found on the Europa leauge website on the arsenal vs athletico game. link below 
@@ -52,7 +53,7 @@ label_stats = A_stats[1].findAll("div", {"class":"statistics--list--data"})
 #print(label2_stats)
 #print(label_stats)
 
-# iterate through list of labels and use .text method to append label text to a list
+# iterate through list of labels and use .text method to append label text to a  each new list list
 # same with the stats
 
 performance_label = []
@@ -122,7 +123,7 @@ for label in labels:
 
 
 #---------------------------------------cleaning the data and converting to floats------------------------------------------------
-### this stage is very important and will depend on that your lists of data look like I only needed to remove the %
+### this stage is very important and will depend on what your lists of data look like I only needed to remove the %
 ### from a few values in each stats list and found a replace function to do it
 ###I also noticed that the label 'accuracy' was a bit ambigous so i changed that
 ### then I converted everything to floats for visulisation later
