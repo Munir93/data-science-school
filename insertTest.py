@@ -4,7 +4,7 @@ conn = sql.connect(host='35.189.118.151',db='test', user='root', password='killb
 cur= conn.cursor()
 
 
-curr.execute("INSERT INTO logs VALUES('T', 'T', 'T', 'T, 'T', 'T', 'T', 'T')")
+cur.execute("INSERT INTO logs VALUES('T', 'T', 'T', 'T, 'T', 'T', 'T', 'T')")
 
 cur.close()
 conn.close()
