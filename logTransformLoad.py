@@ -23,8 +23,8 @@ def lineReaderandLoad(file):
 
         os = splitted_line[12]  + splitted_line[13] + splitted_line[14] + splitted_line[15]
 
-        cur.execute("INSERT INTO logs VALUES(%s, %s, %s, %s, %s, %s, %s, %s;)" % (remote_add,time_local,request,status,body_bytes_sent,http_referer,final_browser,os))
-
+        cur.execute("INSERT INTO logs VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % (remote_add,time_local,request,status,body_bytes_sent,http_referer,final_browser,os))
+       
 
 
 
