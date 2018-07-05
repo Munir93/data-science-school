@@ -20,7 +20,7 @@ def lineReaderandLoad(file):
         final_browser = final[0]
 
         os = splitted_line[12]  + splitted_line[13] + splitted_line[14] + splitted_line[15]
-        conn = sql.connect(host='35.234.159.225', db='test', user='root', password='killbill4')
+        conn = sql.connect(host='35.189.111.87', db='test', user='root', password='')
         cur = conn.cursor()
         cur.execute("INSERT INTO logs VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % (remote_add,time_local,request,status,body_bytes_sent,http_referer,final_browser,os))
         cur.close()
