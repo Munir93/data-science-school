@@ -157,13 +157,13 @@ if __name__ == '__main__':
         if table_name in list_of_tables:
             print('There is already a table with the name:', file, 'in this dataset')
             print('Moving', file, 'to Failed folder. Please see logs')
-            uri='gs://' + config.BUCKET_NAME+'/'+file
+            uri=config.BUCKET_NAME+'/'+file
             destination = config.BUCKET_NAME+'/Failed/'
             move_blob(uri,destination)
-            print('The file:', file, 'has been moved to', destination+'/Failed')
+            print('The file:', file, 'has been moved to', destination)
         else:
             uri = 'gs://' + config.BUCKET_NAME+'/'+file
             load_csv(file, uri)
             destination = config.BUCKET_NAME+'/Completed/'
             move_blob(uri,destination)
-            print('The file', file, 'has successfully been migrated and is now in the folder', destination+'/Completed/' )
+            print('The file', file, 'has successfully been migrated and is now in the folder', destination )
