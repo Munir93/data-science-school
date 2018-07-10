@@ -84,8 +84,7 @@ def load_csv(file, uri):
     remove_extension = file_with_extension.split('.')
     table_name = remove_extension[0]
 
-    load_job = client.load_table_from_uri(
-        source_uris=uri,destination=dataset_ref.table(table_name),job_config=job_config
+    load_job = client.load_table_from_uri(        source_uris=uri,destination=dataset_ref.table(table_name),job_config=job_config
     )
 
     assert load_job.job_type == 'load'
@@ -116,7 +115,7 @@ def load_csv(file, uri):
 
 '''Moving blob to either a completed or a failed folder within bucket'''
 
- def move_blob(sourceLocation, destination):
+def move_blob(sourceLocation, destination):
 
     import os
 
