@@ -178,3 +178,6 @@ if __name__ == '__main__':
             logging.info('{} migration successful'.format(file))
 
 
+    os.system('gsutil cp'+config.LOGGING_FILENAME+' gs://'+config.BUCKET_NAME)
+
+
