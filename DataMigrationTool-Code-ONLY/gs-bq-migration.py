@@ -116,7 +116,7 @@ def load_csv(file, uri):
 
 '''Moving blob to either a completed or a failed folder within bucket'''
 
-def move_blob(sourceLocation, destination):
+ def move_blob(sourceLocation, destination):
 
     import os
 
@@ -178,6 +178,6 @@ if __name__ == '__main__':
             logging.info('{} migration successful'.format(file))
 
 
-    os.system('gsutil cp'+config.LOGGING_FILENAME+' gs://'+config.BUCKET_NAME)
+    os.system('gsutil cp '+config.LOGGING_FILENAME+' gs://'+config.BUCKET_NAME)
 
 
