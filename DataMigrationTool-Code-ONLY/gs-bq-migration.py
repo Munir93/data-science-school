@@ -1,6 +1,7 @@
 from google.cloud import bigquery, storage
 import config as config
 import os
+import logging
 
 '''first we need to set up authentication so we can access bigQ and GCS from external apps
 go into gc and set create a role with rights to bigquery.admin and storage.objectviewer.
@@ -24,7 +25,7 @@ dataset_ref = client.dataset(dataset_id, project=config.PROJECT_ID)
 storage_client = storage.Client.from_service_account_json(json_credentials_path=config.STORAGE_KEY_PATH,project=config.PROJECT_ID)
 bucket = storage_client.get_bucket(config.BUCKET_NAME)
 
-
+logging.basicConfig(filename=config.LOGGING_FILENAME, format='%(asctime)s - %(levelname)s - %(message)s', level=logging.DEBUG)
 
 '''Creating a new dataset'''
 
@@ -47,8 +48,10 @@ def create_dataset():
         dataset = client.create_dataset(dataset)
         #confirm creation
         print('Dataset {} created.'.format(dataset.dataset_id))
+        logging.info('Dataset {} created.'.format(dataset.dataset_id))
     else:
         print('The dataset:', dataset_id, 'already exists in Big Query.')
+        logging.info('The dataset: {}already exists in Big Query.'.format(dataset_id))
 
 ''' Dataset properties function for later use...metadata'''
 
@@ -87,12 +90,14 @@ def load_csv(file, uri):
 
     assert load_job.job_type == 'load'
     print('Starting job {} to load {} into dataset {} '.format(load_job.job_id, file, dataset_ref.dataset_id ))
+    logging.info('Starting job {} to load {} into dataset {} '.format(load_job.job_id, file, dataset_ref.dataset_id ))
     load_job.result()  # Waits for table load to complete.
     print('Job finished.')
+    logging.info('Job Complete')
     assert load_job.state == 'DONE'
     destination_table = client.get_table(dataset_ref.table(table_name))
     print('Loaded {} rows.'.format(destination_table.num_rows))
-
+    logging.info('Loaded {} rows.'.format(destination_table.num_rows))
 '''example for loading files directly into GCS bucket'''
 #blob = bucket.blob('testUpLoadWebLogs')
 #blob.upload_from_filename('C://Users/709231/Desktop/weblogs1.csv')
@@ -117,11 +122,12 @@ def move_blob(sourceLocation, destination):
 
     os.system('gsutil mv gs://'+sourceLocation+' gs://'+destination+'')
 
-
+    logging.info('The file has been loaded from {} to {}'.format(sourceLocation),destination)
 
 
 
 if __name__ == '__main__':
+
 
     create_dataset()
 
@@ -161,9 +167,14 @@ if __name__ == '__main__':
             destination = config.BUCKET_NAME+'/Failed/'
             move_blob(uri,destination)
             print('The file:', file, 'has been moved to', destination)
+            logging.warning('{} already in the dataset now moved to {} in your bucket'.format(file, '/Failed'))
+            logging.info('Please delete when you have confirmed this file exists')
         else:
             uri = 'gs://' + config.BUCKET_NAME+'/'+file
             load_csv(file, uri)
             destination = config.BUCKET_NAME+'/Completed/'
             move_blob(uri,destination)
             print('The file', file, 'has successfully been migrated and is now in the folder', destination )
+            logging.info('{} migration successful'.format(file))
+
+

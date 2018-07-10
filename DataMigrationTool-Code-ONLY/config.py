@@ -9,7 +9,7 @@ ACCOUNT_NAME = 'munirs_account'
 
 PROJECT_ID ='warm-airline-207713'
 
-KEY_PATH = 'authkey1.json'
+KEY_PATH = 'C://Users/709231/Desktop/authkey1.json'
 
 #creating dataset
 
@@ -19,7 +19,7 @@ DATASET = 'test_dataset'
 
 BUCKET_NAME = 'dod-mwja-project1'
 
-STORAGE_KEY_PATH = 'storage_key.json'
+STORAGE_KEY_PATH = 'C://Users/709231/Desktop/storage_key.json'
 
 #loading from gcs to big q
 
@@ -29,7 +29,9 @@ LIST_OF_FILES = ['SampleCSVFile_119kb.csv', 'SampleCSVFile_556kb.csv', 'sample_w
 
 #header available = yes/no
 
+#logging
 
+LOGGING_FILENAME = 'DoD-Project1-logs.log'
 
 
 
