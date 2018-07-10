@@ -122,7 +122,7 @@ def move_blob(sourceLocation, destination):
 
     os.system('gsutil mv gs://'+sourceLocation+' gs://'+destination+'')
 
-    logging.info('The file has been loaded from {} to {}'.format(sourceLocation),destination)
+    logging.info('The file has been loaded from {} to {}'.format(sourceLocation,destination))
 
 
 
