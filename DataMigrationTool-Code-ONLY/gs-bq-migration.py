@@ -75,7 +75,10 @@ def load_csv(file, uri):
     job_config.autodetect = True
 
     #job_config.skip_leading_rows = 1
-    remove_extension = file.split('.')
+    remove_source = file.split('/')
+    file_with_extension = remove_source[1]
+
+    remove_extension = file_with_extension.split('.')
     table_name = remove_extension[0]
 
     load_job = client.load_table_from_uri(
@@ -89,7 +92,6 @@ def load_csv(file, uri):
     assert load_job.state == 'DONE'
     destination_table = client.get_table(dataset_ref.table(table_name))
     print('Loaded {} rows.'.format(destination_table.num_rows))
-
 
 '''example for loading files directly into GCS bucket'''
 #blob = bucket.blob('testUpLoadWebLogs')
@@ -107,16 +109,29 @@ def load_csv(file, uri):
 #print(table.num_rows) #number of rows
 #print(table.created)
 
+'''Moving blob to either a completed or a failed folder within bucket'''
+
+def move_blob(sourceLocation, destination):
+
+    import os
+
+    os.system('gsutil mv gs://'+sourceLocation+' gs://'+destination+'')
+
+
+
+
 
 if __name__ == '__main__':
 
     create_dataset()
 
     '''Creating a list of files (blobs) currently inside the GCS bucket'''
-    blobs = bucket.list_blobs()
+    blobs = bucket.list_blobs(prefix='Source/', delimiter='Source/')
     blob_list = []
     for blob in blobs:
         blob_list.append(blob.name)
+    print(blob_list)
+
     #print(blob_list)
     #print(config.LIST_OF_FILES)
 
@@ -133,14 +148,22 @@ if __name__ == '__main__':
 
     '''Start of logic for migration'''
 
-    for file in config.LIST_OF_FILES:
-        if file in blob_list:
-            print(file, 'is in the bucket', config.BUCKET_NAME)
-            if file.split('.')[0] in list_of_tables:
-                print('There is already a table with the name:', file, 'in this dataset')
-            else:
-                uri = 'gs://'+config.BUCKET_NAME+'/'+file
-                load_csv(file,uri)
+    for file in blob_list[1:len(blob_list)]:
+        print(file, 'is in the bucket', config.BUCKET_NAME)
+        remove_source = file.split('/')
+        file_with_extension = remove_source[1]
+        remove_extension = file_with_extension.split('.')
+        table_name = remove_extension[0]
+        if table_name in list_of_tables:
+            print('There is already a table with the name:', file, 'in this dataset')
+            print('Moving', file, 'to Failed folder. Please see logs')
+            uri='gs://' + config.BUCKET_NAME+'/'+file
+            destination = config.BUCKET_NAME+'/Failed/'
+            move_blob(uri,destination)
+            print('The file:', file, 'has been moved to', destination+'/Failed')
         else:
-            print('there is no such file:', file, 'in the bucket', config.BUCKET_NAME)
-            print('Please upload this file to your Google Storage Bucket to continue migration')
+            uri = 'gs://' + config.BUCKET_NAME+'/'+file
+            load_csv(file, uri)
+            destination = config.BUCKET_NAME+'/Completed/'
+            move_blob(uri,destination)
+            print('The file', file, 'has successfully been migrated and is now in the folder', destination+'/Completed/' )
