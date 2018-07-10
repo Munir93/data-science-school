@@ -2,6 +2,7 @@ from google.cloud import bigquery, storage
 import config as config
 import os
 import logging
+import time
 
 '''first we need to set up authentication so we can access bigQ and GCS from external apps
 go into gc and set create a role with rights to bigquery.admin and storage.objectviewer.
@@ -51,7 +52,7 @@ def create_dataset():
         logging.info('Dataset {} created.'.format(dataset.dataset_id))
     else:
         print('The dataset:', dataset_id, 'already exists in Big Query.')
-        logging.info('The dataset: {}already exists in Big Query.'.format(dataset_id))
+
 
 ''' Dataset properties function for later use...metadata'''
 
@@ -84,7 +85,8 @@ def load_csv(file, uri):
     remove_extension = file_with_extension.split('.')
     table_name = remove_extension[0]
 
-    load_job = client.load_table_from_uri(        source_uris=uri,destination=dataset_ref.table(table_name),job_config=job_config
+    load_job = client.load_table_from_uri(
+        source_uris=uri,destination=dataset_ref.table(table_name),job_config=job_config
     )
 
     assert load_job.job_type == 'load'
@@ -127,56 +129,57 @@ def move_blob(sourceLocation, destination):
 
 if __name__ == '__main__':
 
+    while True:
+        create_dataset()
 
-    create_dataset()
+        '''Creating a list of files (blobs) currently inside the GCS bucket'''
+        blobs = bucket.list_blobs(prefix='Source/', delimiter='Source/')
+        blob_list = []
+        for blob in blobs:
+            blob_list.append(blob.name)
+        print(blob_list)
 
-    '''Creating a list of files (blobs) currently inside the GCS bucket'''
-    blobs = bucket.list_blobs(prefix='Source/', delimiter='Source/')
-    blob_list = []
-    for blob in blobs:
-        blob_list.append(blob.name)
-    print(blob_list)
+        #print(blob_list)
+        #print(config.LIST_OF_FILES)
 
-    #print(blob_list)
-    #print(config.LIST_OF_FILES)
-
-    '''Creating a list of tables currently inside the dataset in Big Query'''
-    tables = list(client.list_dataset_tables(dataset_ref))  # API request(s)
-    list_of_tables = []
-    if tables:
-        for table in tables:
-            list_of_tables.append(table.table_id)
-    else:
-        print('This dataset does not contain any tables')
-    #print('Tables currently in ')
-    #print(list_of_tables)
-
-    '''Start of logic for migration'''
-
-    for file in blob_list[1:len(blob_list)]:
-        print(file, 'is in the bucket', config.BUCKET_NAME)
-        remove_source = file.split('/')
-        file_with_extension = remove_source[1]
-        remove_extension = file_with_extension.split('.')
-        table_name = remove_extension[0]
-        if table_name in list_of_tables:
-            print('There is already a table with the name:', file, 'in this dataset')
-            print('Moving', file, 'to Failed folder. Please see logs')
-            uri=config.BUCKET_NAME+'/'+file
-            destination = config.BUCKET_NAME+'/Failed/'
-            move_blob(uri,destination)
-            print('The file:', file, 'has been moved to', destination)
-            logging.warning('{} already in the dataset now moved to {} in your bucket'.format(file, '/Failed'))
-            logging.info('Please delete when you have confirmed this file exists')
+        '''Creating a list of tables currently inside the dataset in Big Query'''
+        tables = list(client.list_dataset_tables(dataset_ref))  # API request(s)
+        list_of_tables = []
+        if tables:
+            for table in tables:
+                list_of_tables.append(table.table_id)
         else:
-            uri = 'gs://' + config.BUCKET_NAME+'/'+file
-            load_csv(file, uri)
-            destination = config.BUCKET_NAME+'/Completed/'
-            move_blob(uri,destination)
-            print('The file', file, 'has successfully been migrated and is now in the folder', destination )
-            logging.info('{} migration successful'.format(file))
+            print('This dataset does not contain any tables')
+        #print('Tables currently in ')
+        #print(list_of_tables)
+
+        '''Start of logic for migration'''
+
+        for file in blob_list[1:len(blob_list)]:
+            print(file, 'is in the bucket', config.BUCKET_NAME)
+            remove_source = file.split('/')
+            file_with_extension = remove_source[1]
+            remove_extension = file_with_extension.split('.')
+            table_name = remove_extension[0]
+            if table_name in list_of_tables:
+                print('There is already a table with the name:', file, 'in this dataset')
+                print('Moving', file, 'to Failed folder. Please see logs')
+                uri=config.BUCKET_NAME+'/'+file
+                destination = config.BUCKET_NAME+'/Failed/'
+                move_blob(uri,destination)
+                print('The file:', file, 'has been moved to', destination)
+                logging.warning('{} already in the dataset now moved to {} in your bucket'.format(file, '/Failed'))
+                logging.info('Please delete when you have confirmed this file exists')
+            else:
+                uri = 'gs://' + config.BUCKET_NAME+'/'+file
+                load_csv(file, uri)
+                destination = config.BUCKET_NAME+'/Completed/'
+                move_blob(uri,destination)
+                print('The file', file, 'has successfully been migrated and is now in the folder', destination )
+                logging.info('{} migration successful'.format(file))
 
 
-    os.system('gsutil cp '+config.LOGGING_FILENAME+' gs://'+config.BUCKET_NAME)
+        os.system('gsutil cp '+config.LOGGING_FILENAME+' gs://'+config.BUCKET_NAME)
 
+        time.sleep(60)
 
