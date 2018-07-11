@@ -174,6 +174,7 @@ if __name__ == '__main__':
                 uri = 'gs://' + config.BUCKET_NAME+'/'+file
                 load_csv(file, uri)
                 destination = config.BUCKET_NAME+'/Completed/'
+                uri = config.BUCKET_NAME+'/'+file
                 move_blob(uri,destination)
                 print('The file', file, 'has successfully been migrated and is now in the folder', destination )
                 logging.info('{} migration successful'.format(file))
