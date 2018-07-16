@@ -5,7 +5,12 @@ from google.cloud import bigquery
 #dataset_id = config.DATASET
 #dataset_ref = client.dataset(dataset_id, project=config.PROJECT_ID)
 
+client = bigquery.Client()
 
-client1 = bigquery.Client()
-list1 = client1.list_dataset_tables('test_dataset')
-print(list1)
+datasets = client.list_datasets()
+list_of_datasets = []
+
+for dataset in datasets:
+    list_of_datasets.append(dataset.dataset_id)
+
+print(list_of_datasets)
