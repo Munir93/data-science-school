@@ -82,7 +82,7 @@ if __name__ == '__main__':
     df.columns = ['Username', 'Tweet', 'Time', 'Followers']
     df.to_csv(config.CSV_NAME,index=False)
     #send_to_GCS(config.CSV_NAME)
-    os.system('gsutil cp' +config.CSV_NAME+' gs://'+config.BUCKET_NAME+'/Source/')
+    os.system('gsutil cp '+config.CSV_NAME+' gs://'+config.BUCKET_NAME+'/Source/')
     
     
     
