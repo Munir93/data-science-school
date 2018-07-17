@@ -46,7 +46,7 @@ class StreamListener(tweepy.StreamListener):
         # here we need to ocnstruct the final line of data and send each line to a csv that will remain in the folder
         line = [name, text.encode('utf-8'), created, followers]
         with open(config.CSV_NAME, 'a') as f:
-            line_writer = csv.writer(f, dialect='unix')
+            line_writer = csv.writer(f)
             line_writer.writerow(line)
         # returning false if the time limit runs out thus stopping the stream safely
         if (time.time() - self.start_time) < self.limit:
