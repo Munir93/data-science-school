@@ -5,7 +5,7 @@ from time import gmtime, strftime
 #for the purpose of migration user needs to be granted the following access levels
 # bigquery.admin and storage.objectViewer
 
-ACCOUNT_NAME = 'munirs_account'
+#ACCOUNT_NAME = 'munirs_account'
 
 PROJECT_ID ='warm-airline-207713'
 
@@ -25,7 +25,7 @@ STORAGE_KEY_PATH = 'storage_key.json'
 
 #can create function to auto genrate list of files directly from bucket using list blobs method
 #ALL_files =
-LIST_OF_FILES = ['SampleCSVFile_119kb.csv', 'SampleCSVFile_556kb.csv', 'sample_with_headers.csv', 'blaaah',]
+#LIST_OF_FILES = ['SampleCSVFile_119kb.csv', 'SampleCSVFile_556kb.csv', 'sample_with_headers.csv', 'blaaah',]
 
 #header available = yes/no
 
@@ -38,7 +38,7 @@ LOGGING_FILENAME = 'DoD-Project1-logs1.log'
 
 '''Twitter ETL start'''
 
-TRACK_TERMS = ["itscominghome", "englandworldcup", "Englandworldcup"]
+TRACK_TERMS = ["brexit"]
 
 TWITTER_APP_KEY = 'KPVEb25geZ1WUxMrJz3flS6je'
 TWITTER_APP_SECRET = 'BcjmYWEJmDuU81gwW3Hs64mnzH4I67EzgS0H5FfuIs7VFjkXtH'
