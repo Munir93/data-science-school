@@ -14,7 +14,8 @@ from google.cloud import bigquery, storage
 
 '''Creating the client to use with GCS - json key required if running from external application'''
 
-storage_client = storage.Client.from_service_account_json(json_credentials_path=config.STORAGE_KEY_PATH,project=config.PROJECT_ID)
+storage_client = storage.Client()
+#.from_service_account_json(json_credentials_path=config.STORAGE_KEY_PATH,project=config.PROJECT_ID)
 bucket = storage_client.get_bucket(config.BUCKET_NAME)
 
 '''Steam Listener sublcassed from the tweepy module class Stream Listener'''
@@ -80,5 +81,8 @@ if __name__ == '__main__':
     df = read_csv(config.CSV_NAME)
     df.columns = ['Username', 'Tweet', 'Time', 'Followers']
     df.to_csv(config.CSV_NAME,index=False)
-    send_to_GCS(config.CSV_NAME)
-    #os.system('gsutil cp' +config.CSV_NAME+' gs://'+config.BUCKET_NAME+'/Source/')
+    #send_to_GCS(config.CSV_NAME)
+    os.system('gsutil cp' +config.CSV_NAME+' gs://'+config.BUCKET_NAME+'/Source/')
+    
+    
+    
